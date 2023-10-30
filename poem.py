@@ -31,13 +31,13 @@ class PoemManager:
         """
         return pd.read_csv(tsv_file, sep="\t", index_col=None)
 
-    def __getitem__(self, index: int):
+    def __getitem__(self, index: int) -> Poem:
         return Poem.from_dict(self._data.iloc[index].to_dict())
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._data)
 
-    def __iter__(self):
+    def __iter__(self) -> Poem:
         for idx, poem in self._data.iterrows():
             yield Poem.from_dict(poem.to_dict())
 
@@ -47,6 +47,36 @@ if __name__ == "__main__":
 
     curr_dir = os.path.dirname(os.path.abspath(__file__))
     manager = PoemManager(os.path.join(curr_dir, "data/poems.tsv"))
+    # for poem in manager:
+    #     print(poem)
+    # print(manager[3])
+
+    data = []
+    names = []
+    prompt_version = "naive_dalle2"
     for poem in manager:
-        print(poem)
-    print(manager[3])
+        for version in ["v1", "v2"]:
+            if version == "v1" and poem.id > 10:
+                continue
+            if version == "v2" and poem.id > 41:
+                continue
+            name = f"{poem.id}_{poem.title}_{prompt_version}_{version}.png"
+            assert os.path.exists(
+                os.path.join(
+                    curr_dir,
+                    "static/images",
+                )
+            )
+            data.append(
+                {
+                    "poem_id": poem.id,
+                    "poem_name": poem.title,
+                    "prompt_name": prompt_version,
+                    "version": version,
+                    "vote": 0,
+                }
+            )
+            names.append(name)
+    print(names)
+    print(df := pd.DataFrame(data).rename_axis("id"))
+    df.to_csv("votes.tsv", sep="\t")

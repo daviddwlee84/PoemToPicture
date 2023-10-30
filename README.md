@@ -8,6 +8,19 @@ Using LLM to create image from poem
 pip install -r .\requirements.txt
 ```
 
+Edit Streamlit config `~/.streamlit/config.toml`
+
+> Set enableStaticServing = true under [server] in your config file, or environment variable `STREAMLIT_SERVER_ENABLE_STATIC_SERVING=true`.
+
+```toml
+[server]
+enableStaticServing = true
+```
+
+```powershell
+streamlit run demo.py
+```
+
 ## Resources
 
 ### Large Language Model
@@ -33,3 +46,5 @@ pip install -r .\requirements.txt
   - [PablocFonseca/streamlit-aggrid: Implementation of Ag-Grid component for Streamlit](https://github.com/PablocFonseca/streamlit-aggrid)
   - [st.data_editor - Streamlit Docs](https://docs.streamlit.io/library/api-reference/data/st.data_editor#configuring-columns)
   - [st.column_config - Streamlit Docs](https://docs.streamlit.io/library/api-reference/data/st.column_config)
+  - [Static file serving - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/static-file-serving)
+  - [Configuration - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/configuration)
