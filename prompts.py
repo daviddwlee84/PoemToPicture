@@ -3,6 +3,7 @@ import os
 from glob import glob
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
+from poem import Poem
 
 
 @dataclass_json
@@ -12,6 +13,18 @@ class Prompt:
     dalle: str
     system: Optional[str] = None
     chatgpt: Optional[str] = None
+
+    def format(
+        self,
+        prompt: Literal["dalle", "system", "chatgpt"],
+        poem: Poem = None,
+        last_layer_output: str = None,
+    ) -> Optional[str]:
+        string: str = getattr(self, prompt)
+        if not string:
+            return string
+        string = string.format(**poem.to_dict(), output=last_layer_output)
+        return string
 
 
 class PromptManager:
@@ -39,6 +52,15 @@ class PromptManager:
 
 if __name__ == "__main__":
     curr_dir = os.path.dirname(os.path.abspath(__file__))
+    poem = Poem(id=None, title="登鸛雀樓", author="王之渙", content="白日依山盡，黃河入海流。欲窮千里目，更上一層樓。")
     manager = PromptManager(os.path.join(curr_dir, "data/prompts"))
     for prompt in manager:
         print(prompt)
+        print(prompt.format("dalle", poem))
+        print(
+            prompt.format(
+                "dalle",
+                poem,
+                last_layer_output="太陽挨著西山慢慢下沉，黃河向著大海波濤滾滾。想看到遠處更美的景色，必須繼續登樓再上一層。",
+            )
+        )
