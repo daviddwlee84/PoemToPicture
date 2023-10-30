@@ -1,3 +1,4 @@
+from typing import Optional
 import pandas as pd
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
@@ -6,11 +7,11 @@ from dataclasses_json import dataclass_json
 @dataclass_json
 @dataclass
 class Poem:
-    id: int
-    title: str
-    author: str
-    dynasty: str
-    content: str
+    id: Optional[int] = None
+    title: Optional[str] = None
+    author: Optional[str] = None
+    dynasty: Optional[str] = None
+    content: Optional[str] = None
 
 
 class PoemManager:
