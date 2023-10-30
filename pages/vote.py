@@ -1,10 +1,14 @@
 import pandas as pd
 import streamlit as st
 import os
+from poem import PoemManager
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 
 VOTE_PATH = os.path.join(curr_dir, "../data/votes.tsv")
+POEM_PATH = os.path.join(curr_dir, "../data/poems.tsv")
+
+poem_manager = PoemManager(POEM_PATH)
 
 st.title("Voting")
 
@@ -42,12 +46,27 @@ vote_data["image_file"] = (
     + ".png"
 )
 
+vote_data["poem_content"] = (
+    vote_data["poem_id"].astype(int).apply(lambda x: poem_manager.get_by_id(x).content)
+)
+
 edited_vote_data = st.data_editor(
-    vote_data[["poem_id", "poem_name", "prompt_name", "version", "image_file", "vote"]],
+    vote_data[
+        [
+            "poem_id",
+            "poem_name",
+            "poem_content",
+            "prompt_name",
+            "version",
+            "image_file",
+            "vote",
+        ]
+    ],
     column_config={
         "id": "index",
         "poem_id": st.column_config.NumberColumn("poem id"),
-        "poem_name": st.column_config.TextColumn("poem name"),
+        "poem_name": st.column_config.TextColumn("title"),
+        "poem_content": st.column_config.TextColumn("content"),
         "prompt_name": st.column_config.TextColumn("prompt name"),
         "version": st.column_config.TextColumn("image version"),
         "image_file": st.column_config.ImageColumn("Preview Image"),
@@ -61,7 +80,15 @@ edited_vote_data = st.data_editor(
         ),
     },
     on_change=on_change,
-    disabled=["id", "poem_id", "poem_name", "prompt_name", "version", "image_file"],
+    disabled=[
+        "id",
+        "poem_id",
+        "poem_name",
+        "poem_content",
+        "prompt_name",
+        "version",
+        "image_file",
+    ],
 )
 
 if st.session_state["changed"]:

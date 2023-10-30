@@ -4,7 +4,7 @@ import os
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 
-st.title("Poems")
+st.title("Prompts")
 
 prompt_manager = PromptManager(os.path.join(curr_dir, "../data/prompts"))
 
