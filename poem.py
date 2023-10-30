@@ -3,6 +3,16 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 
+@dataclass_json
+@dataclass
+class Poem:
+    id: int
+    title: str
+    author: str
+    dynasty: str
+    content: str
+
+
 class PoemManager:
     """
     https://stackoverflow.com/questions/4019971/how-to-implement-iter-self-for-a-container-object-python
@@ -15,6 +25,9 @@ class PoemManager:
             self._data = self.load(tsv_file)
 
     def load(self, tsv_file: str) -> pd.DataFrame:
+        """
+        TODO: able to incrementally load multiple TSV files
+        """
         return pd.read_csv(tsv_file, sep="\t", index_col=None)
 
     def __getitem__(self, index: int):
@@ -28,20 +41,11 @@ class PoemManager:
             yield Poem.from_dict(poem.to_dict())
 
 
-@dataclass_json
-@dataclass
-class Poem:
-    title: str
-    author: str
-    dynasty: str
-    content: str
-
-
 if __name__ == "__main__":
     import os
 
     curr_dir = os.path.dirname(os.path.abspath(__file__))
-    manager = PoemManager(os.path.join(curr_dir, "data/poem.tsv"))
+    manager = PoemManager(os.path.join(curr_dir, "data/poems.tsv"))
     for poem in manager:
         print(poem)
     print(manager[3])
