@@ -1,0 +1,6 @@
+{
+    "name": "chatgpt_and_dalle2",
+    "system": "You are a helpful assistant with professional knowledge about painting and Chinese poems",
+    "chatgpt": "What can I draw for a painting describing the below poem? Describe in fewer than 50 words.\n```\n{title}\n{content}\n```",
+    "dalle": "{output}"
+}

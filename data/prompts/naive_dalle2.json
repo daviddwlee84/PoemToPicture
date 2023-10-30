@@ -1,0 +1,4 @@
+{
+    "name": "naive_dalle2",
+    "dalle": "请使用传统的中国文化风格画一幅画描述这首诗。 诗的题目是 {title}。 诗的内容是 {content}"
+}
