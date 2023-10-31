@@ -23,6 +23,9 @@ streamlit run demo.py
 
 ## Resources
 
+- [Best Practices for API Key Safety | OpenAI Help Center](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety)
+- [Quickstart tutorial - OpenAI API](https://platform.openai.com/docs/quickstart?context=python)
+
 ### Large Language Model
 
 - [langchain-ai/langchain: ⚡ Building applications with LLMs through composability ⚡](https://github.com/langchain-ai/langchain)
@@ -48,3 +51,4 @@ streamlit run demo.py
   - [st.column_config - Streamlit Docs](https://docs.streamlit.io/library/api-reference/data/st.column_config)
   - [Static file serving - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/static-file-serving)
   - [Configuration - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/configuration)
+  - [Introducing multipage apps! 📄](https://blog.streamlit.io/introducing-multipage-apps/)

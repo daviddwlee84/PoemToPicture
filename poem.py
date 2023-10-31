@@ -40,9 +40,14 @@ class PoemManager:
     def __iter__(self) -> Poem:
         for idx, poem in self._data.iterrows():
             yield Poem.from_dict(poem.to_dict())
-    
-    def get_by_id(self, index: int) -> Poem:
-        return Poem.from_dict(self._data.loc[index].to_dict())
+
+    def get_by_id(self, index: int) -> Optional[Poem]:
+        try:
+            return Poem.from_dict(
+                self._data[self._data["id"] == index].iloc[0].to_dict()
+            )
+        except:
+            return None
 
 
 if __name__ == "__main__":

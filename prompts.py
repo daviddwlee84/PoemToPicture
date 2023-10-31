@@ -49,6 +49,12 @@ class PromptManager:
         for prompt in self._data:
             yield prompt
 
+    def get_by_name(self, name: str) -> Optional[Prompt]:
+        for prompt in self._data:
+            if prompt.name == name:
+                return prompt
+        return None
+
 
 if __name__ == "__main__":
     curr_dir = os.path.dirname(os.path.abspath(__file__))
