@@ -12,9 +12,18 @@ st.set_page_config(
     page_icon="👋",
 )
 
-st.write("# Welcome to Demo of AI School Project 60! 👋")
+st.write("# Welcome to Demo of Microsoft AI School 2023 Project 60! 👋")
 
-st.sidebar.success("Select a demo above.")
+st.sidebar.title("Functionality Explanation")
+st.sidebar.markdown(
+    """
+- `inference poem`: Real-time inference from combination of poem and prompt
+- `poem image viewer`: View selected poem with processed images
+- `poem manager`: View and add new poem
+- `prompt manager`: View and add new prompt
+- `result vote`: Vote generated results and show statistics
+"""
+)
 
 st.markdown(
     """

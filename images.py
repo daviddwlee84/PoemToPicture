@@ -65,6 +65,9 @@ class ImageVoteManager:
         self._data[["poem_id", "poem_name", "prompt_name", "version", "vote"]].to_csv(
             vote_path, sep="\t"
         )
+    
+    # def get_all_poems_indices(self) -> pd.Series:
+    #     return self._data['poem_id'].unique()
 
     def get_images_by_id(self, index: Union[int, str]) -> pd.DataFrame:
         return self._data[self._data["poem_id"] == str(index)]

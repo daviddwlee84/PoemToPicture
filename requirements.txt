@@ -3,6 +3,4 @@ streamlit
 pandas
 python-dotenv
 openai
-langchain[all]
-opencv-python
-scikit-image
+pillow
