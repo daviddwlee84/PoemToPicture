@@ -103,17 +103,16 @@ class OpenAIInference(InferenceBase):
 
 
 class Pipeline:
+
+    image_vote_manager: ImageVoteManager
+    api: InferenceBase
+
     def __init__(
         self,
-        vote_path: str,
-        image_dir: str,
-        deployment_name: str,
-        api_base: str,
-        api_key: str,
-        api_version: str,
+        image_vote_manager: ImageVoteManager, api: InferenceBase
     ) -> None:
-        self.image_vote_manager = ImageVoteManager(vote_path, image_dir)
-        self.api = AzureInference(deployment_name, api_base, api_key, api_version)
+        self.image_vote_manager = image_vote_manager
+        self.api = api
 
     def __call__(self, prompt: Prompt, poem: Poem) -> Tuple[str, str]:
         image_path = self.image_vote_manager.get_new_file_path(

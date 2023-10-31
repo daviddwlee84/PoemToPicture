@@ -45,6 +45,18 @@ class ImageVoteManager:
         for file_path in vote_data["image_file"]:
             assert os.path.exists(file_path)
 
+        vote_data["streamlit_image_file"] = (
+            "/app/static/images/"
+            + vote_data["poem_id"]
+            + "_"
+            + vote_data["poem_name"]
+            + "_"
+            + vote_data["prompt_name"]
+            + "_"
+            + vote_data["version"]
+            + ".png"
+        )
+
         self._data = vote_data
 
     def save(self, vote_path: str = None) -> None:
@@ -66,6 +78,13 @@ class ImageVoteManager:
     def get_images_by_vote(self, vote: Literal[0, 1, 2, 3, 4, 5]) -> pd.DataFrame:
         return self._data[self._data["vote"] == vote]
 
+    def get_images_by_poem_prompt(self, poem: Poem, prompt: Prompt) -> pd.DataFrame:
+        return self._data[
+            (self._data["poem_id"] == str(poem.id))
+            & (self._data["poem_name"] == poem.title)
+            & (self._data["prompt_name"] == prompt.name)
+        ]
+
     @staticmethod
     def get_latest_version(filtered_data: pd.DataFrame) -> str:
         """
@@ -83,7 +102,7 @@ class ImageVoteManager:
     def get_new_file_path(
         self, poem: Poem, prompt: Prompt, update_data: bool = True
     ) -> str:
-        images = self.get_images_by_id(poem.id)
+        images = self.get_images_by_poem_prompt(poem, prompt)
         version = self.get_next_version(self.get_latest_version(images))
         file_path = os.path.join(
             self.image_dir, f"{poem.id}_{poem.title}_{prompt.name}_{version}.png"
