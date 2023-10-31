@@ -8,19 +8,6 @@ Using LLM to create image from poem
 pip install -r .\requirements.txt
 ```
 
-Edit Streamlit config `~/.streamlit/config.toml`
-
-> Set enableStaticServing = true under [server] in your config file, or environment variable `STREAMLIT_SERVER_ENABLE_STATIC_SERVING=true`.
-
-```
-streamlit config show
-```
-
-```toml
-[server]
-enableStaticServing = true
-```
-
 ```powershell
 cp example.env .env
 # Set your API keys
@@ -28,7 +15,14 @@ cp example.env .env
 
 ```powershell
 streamlit run demo.py
+# or
+.\demo.ps1
 ```
+
+> NOTE:
+> 
+> - You don't have to restart the server if you change the page code or source data
+> - You have to restart the server if you change dependencies (i.e. imported library)
 
 ## Resources
 
@@ -65,3 +59,20 @@ streamlit run demo.py
   - [nicedouble/StreamlitAntdComponents: A Streamlit component to display Antd-Design](https://github.com/nicedouble/StreamlitAntdComponents)
     - [Documentation](https://nicedouble-streamlitantdcomponentsdemo-app-middmy.streamlit.app/)
     - [nicedouble/StreamlitAntdComponentsDemo: Streamlit-antd-components demo app](https://github.com/nicedouble/StreamlitAntdComponentsDemo/)
+
+---
+
+No longer needed. We will set this in this repository
+
+Edit Streamlit config `~/.streamlit/config.toml`
+
+> Set enableStaticServing = true under [server] in your config file, or environment variable `STREAMLIT_SERVER_ENABLE_STATIC_SERVING=true`.
+
+```
+streamlit config show
+```
+
+```toml
+[server]
+enableStaticServing = true
+```
