@@ -12,18 +12,22 @@ Edit Streamlit config `~/.streamlit/config.toml`
 
 > Set enableStaticServing = true under [server] in your config file, or environment variable `STREAMLIT_SERVER_ENABLE_STATIC_SERVING=true`.
 
+```
+streamlit config show
+```
+
 ```toml
 [server]
 enableStaticServing = true
 ```
 
 ```powershell
-streamlit run demo.py
+cp example.env .env
+# Set your API keys
 ```
 
 ```powershell
-cp example.env .env
-# Set your API keys
+streamlit run demo.py
 ```
 
 ## Resources
@@ -58,3 +62,6 @@ cp example.env .env
   - [Configuration - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/configuration)
   - [Introducing multipage apps! 📄](https://blog.streamlit.io/introducing-multipage-apps/)
   - [Button behavior and examples - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/button-behavior-and-examples)
+  - [nicedouble/StreamlitAntdComponents: A Streamlit component to display Antd-Design](https://github.com/nicedouble/StreamlitAntdComponents)
+    - [Documentation](https://nicedouble-streamlitantdcomponentsdemo-app-middmy.streamlit.app/)
+    - [nicedouble/StreamlitAntdComponentsDemo: Streamlit-antd-components demo app](https://github.com/nicedouble/StreamlitAntdComponentsDemo/)

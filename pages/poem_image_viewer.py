@@ -6,6 +6,7 @@ from PIL import Image
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 
+st.set_page_config("Demo: Poem Image Viewer")
 st.title("Poem Image Viewer")
 
 image_vote_manager = ImageVoteManager(

@@ -4,6 +4,7 @@ import os
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 
+st.set_page_config("Demo: Poem Manager")
 st.title("Poems")
 
 poem_manger = PoemManager(os.path.join(curr_dir, "../data/poems.tsv"))

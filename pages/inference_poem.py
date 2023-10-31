@@ -11,6 +11,9 @@ curr_dir = os.path.dirname(os.path.abspath(__file__))
 
 load_dotenv(os.path.join(curr_dir, "../.env"))
 
+st.set_page_config("Demo: Real-time Inference")
+st.title("Real-time Inference")
+
 if "pipeline" not in st.session_state:
     st.session_state.image_vote_manager = ImageVoteManager(
         os.path.join(curr_dir, "../data/votes.tsv"),

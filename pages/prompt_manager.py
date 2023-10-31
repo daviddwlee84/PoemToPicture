@@ -4,6 +4,7 @@ import os
 
 curr_dir = os.path.dirname(os.path.abspath(__file__))
 
+st.set_page_config("Demo: Prompt Manager")
 st.title("Prompts")
 
 prompt_manager = PromptManager(os.path.join(curr_dir, "../data/prompts"))

@@ -10,6 +10,7 @@ POEM_PATH = os.path.join(curr_dir, "../data/poems.tsv")
 
 poem_manager = PoemManager(POEM_PATH)
 
+st.set_page_config("Demo: Image Result Voting")
 st.title("Image Result Voting")
 
 if "changed" not in st.session_state:
