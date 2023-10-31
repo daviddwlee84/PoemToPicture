@@ -10,7 +10,7 @@ POEM_PATH = os.path.join(curr_dir, "../data/poems.tsv")
 
 poem_manager = PoemManager(POEM_PATH)
 
-st.title("Voting")
+st.title("Image Result Voting")
 
 if "changed" not in st.session_state:
     st.session_state["changed"] = False
@@ -25,18 +25,18 @@ vote_data = pd.read_csv(
     sep="\t",
     index_col=0,
     dtype={
-        "poem_id": str,
+        "poem_id": int,
         "poem_name": str,
         "prompt_name": str,
         "version": str,
         "vote": int,
     },
-).sort_values(by=["poem_id", "prompt_name", "version"])
+)
 
 vote_data["image_file"] = (
     # os.path.join(curr_dir, "../data/images/")
     "app/static/images/"
-    + vote_data["poem_id"]
+    + vote_data["poem_id"].astype(str)
     + "_"
     + vote_data["poem_name"]
     + "_"
@@ -61,7 +61,7 @@ edited_vote_data = st.data_editor(
             "image_file",
             "vote",
         ]
-    ],
+    ].sort_values(by=["poem_id", "prompt_name", "version"]),
     column_config={
         "id": "index",
         "poem_id": st.column_config.NumberColumn("poem id"),
@@ -92,8 +92,23 @@ edited_vote_data = st.data_editor(
 )
 
 if st.session_state["changed"]:
-    edited_vote_data[["poem_id", "poem_name", "prompt_name", "version", "vote"]].to_csv(
-        VOTE_PATH, sep="\t"
-    )
+    edited_vote_data[
+        ["poem_id", "poem_name", "prompt_name", "version", "vote"]
+    ].sort_index().to_csv(VOTE_PATH, sep="\t")
     st.session_state["changed"] = False
     st.rerun()
+
+# https://docs.streamlit.io/library/api-reference/data/st.metric
+st.subheader("Average vote :star: for each prompt type")
+for prompt_name, df in vote_data.groupby("prompt_name"):
+    voted_df = df[df["vote"] != 0]
+    if voted_df.empty:
+        st.metric(prompt_name, "Haven't voted yet")
+        st.caption(f"Total image of prompt {prompt_name}:\t{len(df)}")
+        # https://docs.streamlit.io/library/api-reference/charts/st.bar_chart
+    else:
+        st.metric(prompt_name, f'{voted_df["vote"].mean():.1f} / 5')
+        st.caption(
+            f"Voted images versus total for prompt {prompt_name}:\t{len(voted_df)} / {len(df)}"
+        )
+        st.bar_chart(pd.Series({i: (voted_df["vote"] == i).sum() for i in range(1, 6)}))
