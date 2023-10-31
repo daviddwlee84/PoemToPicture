@@ -19,6 +19,10 @@ streamlit run demo.py
 .\demo.ps1
 ```
 
+```bash
+./demo.sh
+```
+
 > NOTE:
 > 
 > - You don't have to restart the server if you change the page code or source data

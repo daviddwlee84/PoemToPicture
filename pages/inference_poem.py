@@ -1,3 +1,4 @@
+from typing import Literal
 import streamlit as st
 from poem import PoemManager
 from prompts import PromptManager
@@ -14,6 +15,13 @@ load_dotenv(os.path.join(curr_dir, "../.env"))
 st.set_page_config("Demo: Real-time Inference")
 st.title("Real-time Inference")
 
+# api_version = st.selectbox("API Version", ["OpenAI", "Azure"])
+API_VERSION: Literal["OpenAI", "Azure"] = "Azure"
+
+st.caption(
+    f"You are now using {API_VERSION} API. (modify this in `pages/inference_poem.py`)"
+)
+
 if "pipeline" not in st.session_state:
     st.session_state.image_vote_manager = ImageVoteManager(
         os.path.join(curr_dir, "../data/votes.tsv"),
@@ -26,15 +34,14 @@ if "pipeline" not in st.session_state:
         os.path.join(curr_dir, "../data/poems.tsv")
     )
 
-    api_version = st.selectbox("API Version", ["OpenAI", "Azure"])
-
-    if api_version == "OpenAI":
+    if API_VERSION == "OpenAI":
         st.session_state.api = OpenAIInference(os.getenv("OPENAI_API_KEY"))
     else:
         st.session_state.api = AzureInference(
             os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
             os.getenv("AZURE_OPENAI_ENDPOINT"),
             os.getenv("AZURE_OPENAI_KEY"),
+            os.getenv("AZURE_OPENAI_VERSION"),
         )
 
     st.session_state.pipeline = Pipeline(

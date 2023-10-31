@@ -1,4 +1,4 @@
-from typing import Tuple, Dict
+from typing import Tuple, Dict, Optional
 import requests
 import openai
 from images import ImageVoteManager
@@ -9,6 +9,7 @@ import os
 
 class InferenceBase:
     _api_config: Dict[str, str]
+    _deployment_name: Optional[str] = None
 
     @staticmethod
     def save_image(image_url: str, image_path: str) -> None:
@@ -24,7 +25,11 @@ class InferenceBase:
         https://platform.openai.com/docs/guides/images/image-generation
         """
         generation_response = openai.Image.create(
-            prompt=prompt, size=size, n=n, **self._api_config
+            prompt=prompt,
+            size=size,
+            n=n,
+            deployment_id=self._deployment_name,
+            **self._api_config
         )
         # extract image URL from response
         image_url = generation_response["data"][0]["url"]
@@ -48,9 +53,11 @@ class InferenceBase:
         # Send a completion call to generate a response
         # https://platform.openai.com/docs/api-reference/chat/create
         # openai.error.InvalidRequestError: Must provide an 'engine' or 'model' parameter to create a <class 'openai.api_resources.chat_completion.ChatCompletion'>
-        if hasattr(self, "_deployment_name"):
+        if self._deployment_name is not None:
             response = openai.ChatCompletion.create(
-                engine=self._deployment_name,
+                # engine=self._deployment_name,
+                # model='gpt-35-turbo-16k',
+                deployment_id=self._deployment_name,
                 messages=conversation,
                 temperature=temperature,
                 max_tokens=max_response_tokens,
@@ -81,14 +88,13 @@ class AzureInference(InferenceBase):
         api_base: str,
         api_key: str,
         api_version: str = "2023-06-01-preview",
-        api_type: str = "azure",
     ) -> None:
         self._deployment_name = deployment_name
         self._api_config = {
             "api_base": api_base,
             "api_key": api_key,
             "api_version": api_version,
-            "api_type": api_type,
+            "api_type": "azure",
         }
 
 
@@ -111,8 +117,7 @@ class Pipeline:
     api: InferenceBase
 
     def __init__(
-        self,
-        image_vote_manager: ImageVoteManager, api: InferenceBase
+        self, image_vote_manager: ImageVoteManager, api: InferenceBase
     ) -> None:
         self.image_vote_manager = image_vote_manager
         self.api = api
