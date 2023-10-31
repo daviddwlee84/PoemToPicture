@@ -29,7 +29,13 @@ class PoemManager:
         """
         TODO: able to incrementally load multiple TSV files
         """
+        self.tsv_file = tsv_file
         return pd.read_csv(tsv_file, sep="\t", index_col=None)
+
+    def save(self, tsv_file: str = None) -> None:
+        if not tsv_file:
+            tsv_file = self.tsv_file
+        self._data.to_csv(tsv_file, sep="\t", index=None)
 
     def __getitem__(self, index: int) -> Poem:
         return Poem.from_dict(self._data.iloc[index].to_dict())
@@ -48,6 +54,25 @@ class PoemManager:
             )
         except:
             return None
+
+    def get_by_title(self, title: str) -> Optional[Poem]:
+        try:
+            return Poem.from_dict(
+                self._data[self._data["title"] == title].iloc[0].to_dict()
+            )
+        except:
+            return None
+
+    def get_by_content(self, content: str) -> Optional[Poem]:
+        try:
+            return Poem.from_dict(
+                self._data[self._data["content"] == content].iloc[0].to_dict()
+            )
+        except:
+            return None
+
+    def append(self, poem: Poem) -> None:
+        self._data.loc[len(self._data)] = poem.to_dict()
 
 
 if __name__ == "__main__":
