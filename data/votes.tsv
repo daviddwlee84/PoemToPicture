@@ -56,3 +56,4 @@ id	poem_id	poem_name	prompt_name	version	vote
 54	1	静夜思	chatgpt_and_dalle2	v4	0
 55	27	相思	naive_dalle2	v3	0
 56	99	论诗	naive_dalle2	v1	0
+57	1	静夜思	chatgpt_and_dalle2	v5	0
