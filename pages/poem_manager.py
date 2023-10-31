@@ -15,9 +15,9 @@ st.header("Add new poem widget")
 
 can_submit = True
 
-st.write(f"New poem will be id {len(poem_manger)}")
+index = len(poem_manger) + 1
+st.write(f"New poem will be id {index}")
 # NOTE: "key" is for refresh content
-index = len(poem_manger)
 title = st.text_input("Title", key=f"title_{index}")
 if not title:
     st.error("Title is a must have!")

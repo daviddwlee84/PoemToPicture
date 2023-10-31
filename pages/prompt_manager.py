@@ -29,14 +29,22 @@ if not name:
 if prompt_manager.get_by_name(name):
     st.warning("Prompt with this title has already exist.")
     can_submit = False
+
+st.markdown(
+    "You can use placeholders `{title}`, `{author}`, `{dynasty}`, and `{content}` for poem reference. (applicable in both ChatGPT and Dall-E prompt)"
+)
+
+st.subheader("ChatGPT Prompt (optional)")
 system = st.text_area(
     "System Prompt (to initial ChatGPT context)", key=f"system_{index}"
 )
 chatgpt = st.text_area(
     "User Prompt (to guide ChatGPT to generate Dall-E prompt)", key=f"chatgpt_{index}"
 )
+st.subheader("Dall-E Prompt (required)")
+st.markdown("use `{output}` to inherit output from ChatGPT if needed.")
 dalle = st.text_area(
-    "Dall-E Prompt (use `{output}` to inherit output from ChatGPT if needed)",
+    "Dall-E Prompt",
     key=f"dalle_{index}",
 )
 if not dalle:
