@@ -32,9 +32,10 @@ class PromptManager:
     TODO: support chain of thought
     """
 
-    _data: List[Prompt] = []
+    _data: List[Prompt]
 
     def __init__(self, json_dir: str) -> None:
+        self._data = []
         for path in glob(os.path.join(json_dir, "*.json")):
             with open(path, "r", encoding="utf-8") as fp:
                 self._data.append(Prompt.from_json(fp.read()))
