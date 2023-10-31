@@ -97,5 +97,8 @@ with st.form("inference"):
     submitted = st.form_submit_button("Submit", type="primary")
 
     if submitted:
-        (image_url, image_path) = st.session_state.pipeline(prompt, poem)
-        st.image(image_url)
+        # https://docs.streamlit.io/library/api-reference/status/st.spinner
+        with st.spinner():
+            (image_url, image_path) = st.session_state.pipeline(prompt, poem)
+            st.image(image_url)
+            st.caption("Note that new image rending might be slow. Please wait :).")

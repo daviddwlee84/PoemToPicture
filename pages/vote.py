@@ -31,7 +31,7 @@ vote_data = pd.read_csv(
         "version": str,
         "vote": int,
     },
-)
+).sort_values(by=["poem_id", "prompt_name", "version"])
 
 vote_data["image_file"] = (
     # os.path.join(curr_dir, "../data/images/")
