@@ -10,6 +10,7 @@ class ImageVoteManager:
     _data: pd.DataFrame
 
     def __init__(self, vote_path: str, image_dir: str):
+        self.vote_path = vote_path
         self.image_dir = image_dir
 
         vote_data = pd.read_csv(
@@ -45,6 +46,13 @@ class ImageVoteManager:
             assert os.path.exists(file_path)
 
         self._data = vote_data
+
+    def save(self, vote_path: str = None) -> None:
+        if vote_path is None:
+            vote_path = self.vote_path
+        self._data[["poem_id", "poem_name", "prompt_name", "version", "vote"]].to_csv(
+            vote_path, sep="\t"
+        )
 
     def get_images_by_id(self, index: Union[int, str]) -> pd.DataFrame:
         return self._data[self._data["poem_id"] == str(index)]
@@ -89,6 +97,7 @@ class ImageVoteManager:
                 "vote": 0,
                 "image_file": file_path,
             }
+            # self.save()
 
         return file_path
 

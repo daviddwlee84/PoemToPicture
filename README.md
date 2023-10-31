@@ -21,6 +21,11 @@ enableStaticServing = true
 streamlit run demo.py
 ```
 
+```powershell
+cp example.env .env
+# Set your API keys
+```
+
 ## Resources
 
 - [Best Practices for API Key Safety | OpenAI Help Center](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety)
