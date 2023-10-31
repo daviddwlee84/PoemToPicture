@@ -15,50 +15,55 @@ load_dotenv(os.path.join(curr_dir, "../.env"))
 st.set_page_config("Demo: Real-time Inference")
 st.title("Real-time Inference")
 
-# api_version = st.selectbox("API Version", ["OpenAI", "Azure"])
-API_VERSION: Literal["OpenAI", "Azure"] = "Azure"
+api_version = st.selectbox("API Version", ["OpenAI", "Azure"], index=1)
+# API_VERSION: Literal["OpenAI", "Azure"] = "Azure"
+# st.caption(
+#     f"You are now using {api_version} API. (modify this in `pages/inference_poem.py`)"
+# )
 
-st.caption(
-    f"You are now using {API_VERSION} API. (modify this in `pages/inference_poem.py`)"
+image_vote_manager = ImageVoteManager(
+    os.path.join(curr_dir, "../data/votes.tsv"),
+    os.path.join(curr_dir, "../static/images"),
 )
+prompt_manager = PromptManager(os.path.join(curr_dir, "../data/prompts"))
+poem_manager = PoemManager(os.path.join(curr_dir, "../data/poems.tsv"))
 
-if "pipeline" not in st.session_state:
-    st.session_state.image_vote_manager = ImageVoteManager(
-        os.path.join(curr_dir, "../data/votes.tsv"),
-        os.path.join(curr_dir, "../static/images"),
-    )
-    st.session_state.prompt_manager = PromptManager(
-        os.path.join(curr_dir, "../data/prompts")
-    )
-    st.session_state.poem_manager = PoemManager(
-        os.path.join(curr_dir, "../data/poems.tsv")
+if api_version == "OpenAI":
+    if not os.getenv("OPENAI_API_KEY"):
+        st.error("OpenAI API Key not found. Please check your `.env`.")
+        st.stop()
+    api = OpenAIInference(os.getenv("OPENAI_API_KEY"))
+else:
+    if any(
+        [
+            os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME") is None,
+            os.getenv("AZURE_OPENAI_ENDPOINT") is None,
+            os.getenv("AZURE_OPENAI_KEY") is None,
+            os.getenv("AZURE_OPENAI_VERSION") is None,
+        ]
+    ):
+        st.error("Azure OpenAI API Key not found. Please check your `.env`.")
+        st.stop()
+    api = AzureInference(
+        os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
+        os.getenv("AZURE_OPENAI_ENDPOINT"),
+        os.getenv("AZURE_OPENAI_KEY"),
+        os.getenv("AZURE_OPENAI_VERSION"),
     )
 
-    if API_VERSION == "OpenAI":
-        st.session_state.api = OpenAIInference(os.getenv("OPENAI_API_KEY"))
-    else:
-        st.session_state.api = AzureInference(
-            os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME"),
-            os.getenv("AZURE_OPENAI_ENDPOINT"),
-            os.getenv("AZURE_OPENAI_KEY"),
-            os.getenv("AZURE_OPENAI_VERSION"),
-        )
-
-    st.session_state.pipeline = Pipeline(
-        st.session_state.image_vote_manager, st.session_state.api
-    )
+pipeline = Pipeline(image_vote_manager, api)
 
 poem_index = st.selectbox(
     "Select Poem",
-    st.session_state.poem_manager._data.index,
-    format_func=lambda x: f'{st.session_state.poem_manager._data.loc[x]["id"]} - {st.session_state.poem_manager._data.loc[x]["author"]} - {st.session_state.poem_manager._data.loc[x]["title"]}',
+    poem_manager._data.index,
+    format_func=lambda x: f'{poem_manager._data.loc[x]["id"]} - {poem_manager._data.loc[x]["author"]} - {poem_manager._data.loc[x]["title"]}',
 )
 
-poem = st.session_state.poem_manager[poem_index]
+poem = poem_manager[poem_index]
 
 prompt = st.selectbox(
     "Select Prompt",
-    st.session_state.prompt_manager._data,
+    prompt_manager._data,
     format_func=lambda x: x.name,
 )
 
@@ -66,13 +71,11 @@ with st.expander("Raw Selected Object"):
     st.write(poem)
     st.write(prompt)
 
-new_file_path = st.session_state.image_vote_manager.get_new_file_path(
-    poem, prompt, update_data=False
-)
+new_file_path = image_vote_manager.get_new_file_path(poem, prompt, update_data=False)
 st.text(f"New file will be generated at {new_file_path}")
 
 with st.expander("Existing Images for Poem-Prompt pair"):
-    images = st.session_state.image_vote_manager.get_images_by_poem_prompt(poem, prompt)
+    images = image_vote_manager.get_images_by_poem_prompt(poem, prompt)
     st.write(images)
     if images.empty:
         st.text("No existing images")
@@ -109,6 +112,6 @@ with st.form("inference"):
     if submitted:
         # https://docs.streamlit.io/library/api-reference/status/st.spinner
         with st.spinner():
-            (image_url, image_path) = st.session_state.pipeline(prompt, poem)
+            (image_url, image_path) = pipeline(prompt, poem)
             st.image(image_url)
             st.caption("Note that new image rending might be slow. Please wait :).")
