@@ -57,3 +57,4 @@ cp example.env .env
   - [Static file serving - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/static-file-serving)
   - [Configuration - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/configuration)
   - [Introducing multipage apps! 📄](https://blog.streamlit.io/introducing-multipage-apps/)
+  - [Button behavior and examples - Streamlit Docs](https://docs.streamlit.io/library/advanced-features/button-behavior-and-examples)

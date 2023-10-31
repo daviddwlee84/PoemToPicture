@@ -103,6 +103,9 @@ class OpenAIInference(InferenceBase):
 
 
 class Pipeline:
+    """
+    TODO: callbacks to dump intermediate result
+    """
 
     image_vote_manager: ImageVoteManager
     api: InferenceBase

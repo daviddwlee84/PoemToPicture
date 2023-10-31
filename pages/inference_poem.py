@@ -74,16 +74,28 @@ with st.expander("Existing Images for Poem-Prompt pair"):
             images["version"].to_list(),
         )
 
-st.subheader("Poem and Prompt")
-col1, col2 = st.columns(2)
-with col1:
-    st.markdown(
-        f"""### {poem.id} - {poem.title} - {poem.author}
 
-        {poem.content}
-    """
-    )
-with col2:
-    st.write(
-        {key: value for key, value in prompt.to_dict().items() if value is not None}
-    )
+# https://docs.streamlit.io/library/api-reference/control-flow/st.form
+with st.form("inference"):
+    st.write("Inference")
+    # st.subheader("Poem and Prompt")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(
+            f"""### {poem.id} - {poem.title} - {poem.author}
+
+            {poem.content}
+        """
+        )
+    with col2:
+        st.write(
+            {key: value for key, value in prompt.to_dict().items() if value is not None}
+        )
+
+    # Every form must have a submit button.
+    # https://docs.streamlit.io/library/api-reference/control-flow/st.form_submit_button
+    submitted = st.form_submit_button("Submit", type="primary")
+
+    if submitted:
+        (image_url, image_path) = st.session_state.pipeline(prompt, poem)
+        st.image(image_url)
