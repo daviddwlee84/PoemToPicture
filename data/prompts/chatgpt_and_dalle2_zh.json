@@ -1,0 +1,6 @@
+{
+    "name": "chatgpt_and_dalle2_zh",
+    "dalle": "请根据以下描述使用传统的中国文化风格画一幅画。\n{output}",
+    "system": "你是一个善于将文言文解释成白话文的语文专家。",
+    "chatgpt": "请将以下诗词用50个字左右的白话文进行解释\n\n诗名：{title}\n作者：{author}\n朝代：{dynasty}\n内容：\n{content}"
+}
