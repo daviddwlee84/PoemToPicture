@@ -6,13 +6,9 @@ curr_dir = os.path.dirname(os.path.abspath(__file__))
 
 st.title("Poems")
 
-poem_manger = PoemManager(
-    os.path.join(curr_dir, "../data/poems.tsv")
-)
+poem_manger = PoemManager(os.path.join(curr_dir, "../data/poems.tsv"))
 
-st.dataframe(
-    poem_manger._data.set_index("id"), use_container_width=True
-)
+st.dataframe(poem_manger._data.set_index("id"), use_container_width=True)
 
 st.header("Add new poem widget")
 
@@ -27,7 +23,6 @@ if not title:
     can_submit = False
 if poem_manger.get_by_title(title):
     st.warning("Poem with this title has already exist.")
-st.write(title)
 author = st.text_input("Author", key=f"author_{index}")
 dynasty = st.text_input("Dynasty", key=f"dynasty_{index}")
 content = st.text_area("Content", key=f"content_{index}")

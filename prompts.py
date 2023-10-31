@@ -36,6 +36,7 @@ class PromptManager:
 
     def __init__(self, json_dir: str) -> None:
         self._data = []
+        self.json_dir = json_dir
         for path in glob(os.path.join(json_dir, "*.json")):
             with open(path, "r", encoding="utf-8") as fp:
                 self._data.append(Prompt.from_json(fp.read()))
@@ -55,6 +56,13 @@ class PromptManager:
             if prompt.name == name:
                 return prompt
         return None
+
+    def append(self, prompt: Prompt, save: bool = True) -> None:
+        self._data.append(prompt)
+        with open(
+            os.path.join(self.json_dir, f"{prompt.name}.json"), "w", encoding="utf-8"
+        ) as fp:
+            fp.write(prompt.to_json(indent=4, ensure_ascii=False))
 
 
 if __name__ == "__main__":
