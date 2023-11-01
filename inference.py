@@ -24,13 +24,18 @@ class InferenceBase:
 
         https://platform.openai.com/docs/guides/images/image-generation
         """
-        generation_response = openai.Image.create(
-            prompt=prompt,
-            size=size,
-            n=n,
-            deployment_id=self._deployment_name,
-            **self._api_config
-        )
+        if self._deployment_name is not None:
+            generation_response = openai.Image.create(
+                prompt=prompt,
+                size=size,
+                n=n,
+                deployment_id=self._deployment_name,
+                **self._api_config
+            )
+        else:
+            generation_response = openai.Image.create(
+                prompt=prompt, size=size, n=n, **self._api_config
+            )
         # extract image URL from response
         image_url = generation_response["data"][0]["url"]
         return image_url
@@ -103,6 +108,7 @@ class OpenAIInference(InferenceBase):
         self,
         api_key: str,
     ) -> None:
+        self._deployment_name = None
         self._api_config = {
             "api_key": api_key,
         }
@@ -122,13 +128,17 @@ class Pipeline:
         self.image_vote_manager = image_vote_manager
         self.api = api
 
-    def __call__(self, prompt: Prompt, poem: Poem) -> Tuple[str, str]:
+    def __call__(
+        self, prompt: Prompt, poem: Poem, temperature: float = 0.5
+    ) -> Tuple[str, str]:
         image_path = self.image_vote_manager.get_new_file_path(
             poem, prompt, update_data=True
         )
         if prompt.system and prompt.chatgpt:
             output = self.api.chatgpt(
-                prompt.format("chatgpt", poem), prompt.format("system", poem)
+                prompt.format("chatgpt", poem),
+                prompt.format("system", poem),
+                temperature=temperature,
             )
             image_url = self.api.dalle2(prompt.format("dalle", poem, output))
         else:

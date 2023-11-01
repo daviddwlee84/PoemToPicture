@@ -1,8 +1,8 @@
-from typing import Literal
 import streamlit as st
 from poem import PoemManager
 from prompts import PromptManager
 from images import ImageVoteManager
+from openai.error import OpenAIError
 from inference import Pipeline, OpenAIInference, AzureInference
 import os
 from PIL import Image
@@ -105,6 +105,9 @@ with st.form("inference"):
             {key: value for key, value in prompt.to_dict().items() if value is not None}
         )
 
+    temperature = st.number_input(
+        "Temperature", min_value=0.0, max_value=2.0, value=0.5, step=0.1
+    )
     # Every form must have a submit button.
     # https://docs.streamlit.io/library/api-reference/control-flow/st.form_submit_button
     submitted = st.form_submit_button("Submit", type="primary")
@@ -112,6 +115,11 @@ with st.form("inference"):
     if submitted:
         # https://docs.streamlit.io/library/api-reference/status/st.spinner
         with st.spinner():
-            (image_url, image_path) = pipeline(prompt, poem)
+            try:
+                (image_url, image_path) = pipeline(
+                    prompt, poem, temperature=temperature
+                )
+            except OpenAIError as error:
+                st.toast(f"Poem {poem} has an OpenAI error {error}", icon="⚠️")
             st.image(image_url)
             st.caption("Note that new image rending might be slow. Please wait :).")
