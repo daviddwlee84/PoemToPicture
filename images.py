@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal, Union, List
 import pandas as pd
 import re
 import os
@@ -9,9 +9,10 @@ from prompts import Prompt
 class ImageVoteManager:
     _data: pd.DataFrame
 
-    def __init__(self, vote_path: str, image_dir: str):
+    def __init__(self, vote_path: str, image_dir: str, verbose: bool = False):
         self.vote_path = vote_path
         self.image_dir = image_dir
+        self.verbose = verbose
 
         vote_data = pd.read_csv(
             vote_path,
@@ -65,7 +66,7 @@ class ImageVoteManager:
         self._data[["poem_id", "poem_name", "prompt_name", "version", "vote"]].to_csv(
             vote_path, sep="\t"
         )
-    
+
     # def get_all_poems_indices(self) -> pd.Series:
     #     return self._data['poem_id'].unique()
 
@@ -124,7 +125,64 @@ class ImageVoteManager:
         return file_path
 
 
-if __name__ == "__main__":
+class UserVoteManager(ImageVoteManager):
+    _user_votes: pd.DataFrame
+
+    def __init__(
+        self,
+        vote_path: str,
+        user_votes_path: str,
+        image_dir: str,
+        verbose: bool = False,
+    ):
+        super().__init__(vote_path, image_dir, verbose)
+        self.user_votes_path = user_votes_path
+        user_votes_df = pd.read_csv(user_votes_path, sep="\t", index_col=0)
+        self._user_votes = user_votes_df
+        if initialized_count := self.initial_new_image() > 0:
+            if self.verbose:
+                print(f"Add additional {initialized_count} images.")
+            self.save_votes()
+
+    def initial_new_image(self) -> int:
+        """
+        https://stackoverflow.com/questions/58434018/pandas-adding-row-with-all-values-zero
+        """
+        initial_rows = 0
+        for index in self._data.index.difference(self._user_votes.index):
+            self._user_votes.loc[index] = 0
+            initial_rows += 1
+        return initial_rows
+
+    def initial_new_user(self, user: str) -> bool:
+        if user not in self.get_existing_users():
+            self._user_votes[user] = 0
+            return True
+        return False
+
+    def get_existing_users(self) -> List[str]:
+        return self._user_votes.columns.to_list()
+
+    def get_joined_data(self) -> pd.DataFrame:
+        return self._data.drop('vote', axis=1).join(self._user_votes, lsuffix=None, rsuffix="_votes")
+
+    def save_votes(self, user_votes_path: str = None) -> None:
+        if user_votes_path is None:
+            user_votes_path = self.user_votes_path
+        self._user_votes.to_csv(user_votes_path, sep="\t")
+    
+    def get_streamlit_data(self) -> pd.DataFrame:
+        """
+        TODO: join poem content and sort with poem_id & prompt_name & version
+        """
+
+    def update_user_votes(self, streamlit_df: pd.DataFrame):
+        """
+        Save votes to file and update self._user_votes
+        """
+
+
+def _test_vote_manager():
     curr_dir = os.path.dirname(os.path.abspath(__file__))
     manager = ImageVoteManager(
         os.path.join(curr_dir, "data/votes.tsv"),
@@ -147,3 +205,26 @@ if __name__ == "__main__":
     print(new_file_path := manager.get_new_file_path(poem, prompt, update_data=True))
     poem = poems.get_by_id(10)
     print(new_file_path := manager.get_new_file_path(poem, prompt, update_data=True))
+
+
+def _test_user_vote():
+    curr_dir = os.path.dirname(os.path.abspath(__file__))
+
+    manager = UserVoteManager(
+        os.path.join(curr_dir, "data/votes.tsv"),
+        os.path.join(curr_dir, "data/user_votes.tsv"),
+        os.path.join(curr_dir, "static/images"),
+        verbose=True,
+    )
+
+    print(manager._user_votes)
+    print(manager.get_existing_users())
+    print(manager.get_joined_data())
+    import ipdb
+
+    ipdb.set_trace()
+
+
+if __name__ == "__main__":
+    # _test_vote_manager()
+    _test_user_vote()
