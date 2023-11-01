@@ -86,3 +86,6 @@ id	poem_id	poem_name	prompt_name	version	vote
 84	98	己亥杂诗	chatgpt_and_dalle2	v3	0
 85	99	论诗	chatgpt_and_dalle2_zh	v1	0
 86	100	狱中题壁	chatgpt_and_dalle2_zh	v1	0
+87	1	静夜思	chatgpt_and_dalle2_zh	v4	0
+88	2	早发白帝城	chatgpt_and_dalle2_zh	v1	0
+89	3	望庐山瀑布	chatgpt_and_dalle2_zh	v1	0
