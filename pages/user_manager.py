@@ -18,9 +18,7 @@ users = user_vote_manager.get_existing_users()
 st.header("User and Vote Statistics")
 
 st.subheader("User Voting Progress")
-voting_count = (
-    user_vote_manager._user_votes[user_vote_manager._user_votes > 0].sum().astype(int)
-)
+voting_count = (user_vote_manager._user_votes > 0).sum().astype(int)
 for user in users:
     st.metric(user, f"{voting_count[user]} / {len(user_vote_manager._user_votes)}")
 

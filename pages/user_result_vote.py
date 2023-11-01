@@ -80,9 +80,11 @@ edited_vote_data = st.data_editor(
 )
 
 if st.session_state["changed"]:
-    user_vote_manager.update_user_votes(edited_vote_data)
+    user_vote_manager.update_user_votes(edited_vote_data, save=True)
     st.session_state["changed"] = False
-    # st.rerun()
+    st.rerun()
+
+# TODO: select users
 
 # TODO
 # https://docs.streamlit.io/library/api-reference/data/st.metric

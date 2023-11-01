@@ -164,22 +164,32 @@ class UserVoteManager(ImageVoteManager):
         return self._user_votes.columns.to_list()
 
     def get_joined_data(self) -> pd.DataFrame:
-        return self._data.drop('vote', axis=1).join(self._user_votes, lsuffix=None, rsuffix="_votes")
+        return self._data.drop("vote", axis=1).join(
+            self._user_votes, lsuffix=None, rsuffix="_votes"
+        )
 
     def save_votes(self, user_votes_path: str = None) -> None:
         if user_votes_path is None:
             user_votes_path = self.user_votes_path
         self._user_votes.to_csv(user_votes_path, sep="\t")
-    
+
     def get_streamlit_data(self) -> pd.DataFrame:
         """
         TODO: join poem content and sort with poem_id & prompt_name & version
         """
 
-    def update_user_votes(self, streamlit_df: pd.DataFrame):
+    def update_user_votes(self, streamlit_df: pd.DataFrame, save: bool = True):
         """
         Save votes to file and update self._user_votes
+        https://stackoverflow.com/questions/37400246/pandas-update-multiple-columns-at-once
         """
+        user_votes = streamlit_df[self.get_existing_users()].reindex_like(
+            self._user_votes
+        )
+        self._user_votes.loc[:, self.get_existing_users()] = user_votes
+        if save:
+            self.save_votes()
+            # user_votes.sort_index().to_csv(self.user_votes_path, sep='\t')
 
 
 def _test_vote_manager():
