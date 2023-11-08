@@ -18,6 +18,7 @@ st.sidebar.title("Functionality Explanation")
 st.sidebar.markdown(
     """
 - `batch inference`: Batch inference with selected prompt on all poems
+- `import image`: Import image with formatted filename for voting
 - `inference poem`: Real-time inference from combination of poem and prompt
 - `poem image viewer`: View selected poem with processed images
 - `poem manager`: View and add new poem
