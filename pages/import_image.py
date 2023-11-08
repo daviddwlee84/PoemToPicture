@@ -47,3 +47,38 @@ with st.expander("Image Preview"):
 
 with st.expander("Version Preview"):
     st.write([{filename: filename_parser(filename)} for filename in file_mapping])
+
+# TODO: what if there are duplicate files..?
+
+curr_dir = os.path.dirname(os.path.abspath(__file__))
+poem_manger = PoemManager(os.path.join(curr_dir, "../data/poems.tsv"))
+
+invalid_files = set()
+for filename in file_mapping:
+    if (file_detail := filename_parser(filename)) is None:
+        st.warning(f"Invalid filename ({filename}) found. Will be skipped.")
+        invalid_files.add(filename)
+        continue
+
+    if (poem := poem_manger.get_by_id(file_detail["poem_id"])) is None:
+        st.warning(
+            f"Invalid poem id ({file_detail['poem_id']}) found. Will be skipped."
+        )
+        invalid_files.add(filename)
+        continue
+
+    if poem.title != file_detail["poem_name"]:
+        st.warning(
+            f"Poem id is not matched with the title ({file_detail['poem_name']}). Will be skipped."
+        )
+        invalid_files.add(filename)
+        continue
+
+if not invalid_files:
+    st.success(
+        f"All {len(file_mapping)} image{'s' if len(file_mapping) > 1 else ''} are valid!"
+    )
+else:
+    st.success(
+        f"Found {len(file_mapping) - len(invalid_files)} valid image{'s' if len(file_mapping) - len(invalid_files) > 1 else ''}."
+    )
