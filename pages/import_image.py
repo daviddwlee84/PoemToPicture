@@ -131,13 +131,12 @@ with st.form("import"):
                     continue
                 else:
                     st.toast(f"Override existing image {path}.")
+            else:
+                # NOTE: only update index when it is "new"
+                # TODO: use cache
+                image_vote_manager.append_new_index(**filename_parser(filename))
 
             file_mapping[filename].save(path)
-            # with open(path, "wb") as image_file:
-            #     image_file.write()
-
-            # TODO: use cache
-            image_vote_manager.append_new_index(**filename_parser(filename))
 
         image_vote_manager.save()
         # NOTE: This is used to update user vote table
