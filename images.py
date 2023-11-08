@@ -67,6 +67,9 @@ class ImageVoteManager:
             vote_path, sep="\t"
         )
 
+    def __len__(self) -> int:
+        return len(self._data)
+
     # def get_all_poems_indices(self) -> pd.Series:
     #     return self._data['poem_id'].unique()
 
@@ -123,6 +126,24 @@ class ImageVoteManager:
             # self.save()
 
         return file_path
+
+    def append_new_index(
+        self, poem_id: int, poem_name: str, prompt_name: str, version: str
+    ) -> None:
+        """
+        NOTE: not checking if input valid
+        """
+        file_path = os.path.join(
+            self.image_dir, f"{poem_id}_{poem_name}_{prompt_name}_{version}.png"
+        )
+        self._data.loc[len(self._data)] = {
+            "poem_id": str(poem_id),
+            "poem_name": poem_name,
+            "prompt_name": prompt_name,
+            "version": version,
+            "vote": 0,
+            "image_file": file_path,
+        }
 
 
 class UserVoteManager(ImageVoteManager):
