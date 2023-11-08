@@ -89,3 +89,15 @@ id	poem_id	poem_name	prompt_name	version	vote
 87	1	静夜思	chatgpt_and_dalle2_zh	v4	0
 88	2	早发白帝城	chatgpt_and_dalle2_zh	v1	0
 89	3	望庐山瀑布	chatgpt_and_dalle2_zh	v1	0
+90	1	静夜思	chatgpt_and_dalle2_zh	v5	0
+91	1	静夜思	chatgpt_and_dalle2_zh	v6	0
+92	1	静夜思	chatgpt_and_dalle2_zh	v7	0
+93	2	早发白帝城	chatgpt_and_dalle2_zh	v2	0
+94	2	早发白帝城	chatgpt_and_dalle2_zh	v3	0
+95	2	早发白帝城	chatgpt_and_dalle2_zh	v4	0
+96	3	望庐山瀑布	chatgpt_and_dalle2_zh	v2	0
+97	3	望庐山瀑布	chatgpt_and_dalle2_zh	v3	0
+98	3	望庐山瀑布	chatgpt_and_dalle2_zh	v4	0
+99	4	秋浦歌	chatgpt_and_dalle2_zh	v1	0
+100	4	秋浦歌	chatgpt_and_dalle2_zh	v2	0
+101	4	秋浦歌	chatgpt_and_dalle2_zh	v3	0
